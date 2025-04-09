@@ -12,5 +12,5 @@ spec:
     name: clickhouse
     namespace: flux-system
     # version: 8.0.6
-  valuesFiles:
-    - values.yaml
+    valuesFiles:
+      - values.yaml
