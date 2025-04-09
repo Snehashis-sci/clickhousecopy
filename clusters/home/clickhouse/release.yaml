@@ -9,7 +9,7 @@ spec:
     spec:
       chart: clickhouse
       version: 8.0.6
-      sourceRef:
+      chartRef:
         kind: OCIRepository
         name: clickhouse
         namespace: flux-system
