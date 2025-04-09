@@ -4,14 +4,11 @@ metadata:
   name: clickhouse
   namespace: clickhouse
 spec:
-  # chart: clickhouse
-  # version: 8.0.6
   interval: 5m
   chartRef:
     kind: OCIRepository
     name: clickhouse
     namespace: flux-system
-    version: 8.0.6
   values:
     replicaCount: 2
     clusterName: "clickhouse-cluster1"
