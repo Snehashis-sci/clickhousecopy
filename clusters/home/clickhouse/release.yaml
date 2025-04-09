@@ -5,12 +5,12 @@ metadata:
   namespace: clickhouse
 spec:
   chart: clickhouse
-  version: 8.0.6
+  # version: 8.0.6
   interval: 5m
   chartRef:
     kind: OCIRepository
     name: clickhouse
     namespace: flux-system
-    # version: 8.0.6
+    version: 8.0.6
     valuesFiles:
       - values.yaml
