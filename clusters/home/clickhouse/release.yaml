@@ -4,7 +4,7 @@ metadata:
   name: clickhouse
   namespace: clickhouse
 spec:
-  interval: 5m
+  interval: 2m
   chartRef:
     kind: OCIRepository
     name: clickhouse
