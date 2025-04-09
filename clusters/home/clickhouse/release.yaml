@@ -7,11 +7,12 @@ spec:
   interval: 5m
   chart:
     spec:
-      chart: clickhouse
-      version: 8.0.6
+      # chart: clickhouse
+      # version: 8.0.6
       chartRef:
         kind: OCIRepository
         name: clickhouse
         namespace: flux-system
+        version: 8.0.6
       valuesFiles:
         - values.yaml
