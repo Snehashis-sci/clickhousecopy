@@ -4,15 +4,13 @@ metadata:
   name: clickhouse
   namespace: clickhouse
 spec:
+  chart: clickhouse
+  version: 8.0.6
   interval: 5m
-  chart:
-    spec:
-      # chart: clickhouse
-      # version: 8.0.6
-      chartRef:
-        kind: OCIRepository
-        name: clickhouse
-        namespace: flux-system
-        # version: 8.0.6
-      valuesFiles:
-        - values.yaml
+  chartRef:
+    kind: OCIRepository
+    name: clickhouse
+    namespace: flux-system
+    # version: 8.0.6
+  valuesFiles:
+    - values.yaml
