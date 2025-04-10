@@ -182,10 +182,13 @@ spec:
     shards: 1
     auth:
       username: default
-      password: "HmLdpo39fRRd441D"
+      # password: "HmLdpo39fRRd441D"
 
     service:
       type: NodePort
 
     metrics:
       enabled: true
+  valuesFrom:
+    - kind: Secret
+      name: clickhouse-auth

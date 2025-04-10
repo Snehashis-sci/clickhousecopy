@@ -4,4 +4,9 @@ resources:
   - clickhouse/helmrepo.yaml
   - clickhouse/release.yaml
   - clickhouse/namespace.yaml
-
+secretGenerator:
+  - name: clickhouse-auth
+    files:
+      - auth.yaml
+configurations:
+  - kustomizeconfig.yaml
