@@ -6,6 +6,7 @@ resources:
   - clickhouse/namespace.yaml
 secretGenerator:
   - name: clickhouse-auth
+    namespace: clickhouse
     files:
       - clickhouse/auth.yaml
 configurations:
