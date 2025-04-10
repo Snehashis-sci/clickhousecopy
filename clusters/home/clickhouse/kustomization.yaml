@@ -8,6 +8,6 @@ secretGenerator:
   - name: clickhouse-auth
     namespace: clickhouse
     files:
-      - values.yaml=../auth.values.yaml
+      - values.yaml=auth.values.yaml
 configurations:
   - kustomizeconfig.yaml
