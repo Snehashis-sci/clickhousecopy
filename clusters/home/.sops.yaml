@@ -1,4 +1,4 @@
 creation_rules:
-  - path_regex: ./credentials/auth\.yaml$
+  - path_regex: \.values.\.yaml$
     encrypted_regex: "^(data|stringData|secret|secureJsonData|password|stringPassword|auth)$" # You can add required regex here
     age: age10fq6202yhpg3nh0ce32dhz8w64g2xa8lkwux0uzuafnz3ywguuvqqyf68r
