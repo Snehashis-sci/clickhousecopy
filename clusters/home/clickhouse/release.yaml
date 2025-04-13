@@ -189,6 +189,6 @@ spec:
 
     metrics:
       enabled: true
-  # valuesFrom:
-  #   - kind: Secret
-  #     name: clickhouse-auth
+  valuesFrom:
+    - kind: Secret
+      name: clickhouse-auth
