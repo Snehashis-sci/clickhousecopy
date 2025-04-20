@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ./clickhouse/helmrepo.yaml
   - ./clickhouse/release.yaml
-  - ./clickhouse/namespace.yaml
+  # - ./clickhouse/namespace.yaml
 secretGenerator:
   - name: clickhouse-auth
     namespace: clickhouse
