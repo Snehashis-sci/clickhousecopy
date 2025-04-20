@@ -1,3 +1,4 @@
 *.decrypted~*
 .decrypted~auth.yaml
 auth.yaml
+.decrypted~auth.enc.yaml
