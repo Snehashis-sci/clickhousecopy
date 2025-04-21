@@ -6,7 +6,7 @@ metadata:
 resources:
   - helmrepo.yaml
   - release.yaml
-  # - ./clickhouse/namespace.yaml
+  - namespace.yaml
 secretGenerator:
   - name: clickhouse-auth
     files:
