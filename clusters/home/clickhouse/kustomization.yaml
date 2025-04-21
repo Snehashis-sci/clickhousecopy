@@ -6,10 +6,10 @@ metadata:
 resources:
   - ./clickhouse/helmrepo.yaml
   - ./clickhouse/release.yaml
-  - ./clickhouse/namespace.yaml
+  # - ./clickhouse/namespace.yaml
 secretGenerator:
   - name: clickhouse-auth
     files:
-      - values.yaml=./clickhouse/auth.enc.yaml
+      # - values.yaml=./clickhouse/auth.yaml
 configurations:
   - ./clickhouse/kustomizeconfig.yaml
