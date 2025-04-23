@@ -4,7 +4,7 @@ metadata:
   name: clickhouse
   namespace: flux-system
 spec:
-  interval: 60m
+  interval: 1m
   url: oci://registry-1.docker.io/bitnamicharts/clickhouse
   ref:
     tag: 8.0.6
