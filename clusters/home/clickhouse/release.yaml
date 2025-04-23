@@ -192,3 +192,4 @@ spec:
   valuesFrom:
     - kind: Secret
       name: clickhouse-auth
+      namespace: clickhouse
