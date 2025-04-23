@@ -8,7 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: clickhouse
-    namespace: flux-system
+    namespace: clickhouse
   valuesFrom:
     - kind: Secret
       name: clickhouse-auth
