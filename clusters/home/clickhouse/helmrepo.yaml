@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
   name: clickhouse
-  namespace: flux-system
+  namespace: clickhouse
 spec:
   interval: 1m
   url: oci://registry-1.docker.io/bitnamicharts/clickhouse
