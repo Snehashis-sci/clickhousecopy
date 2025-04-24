@@ -164,23 +164,8 @@ distributeReplicasByZone: true
 shards: 1
 auth:
     username: default
-    password: ENC[AES256_GCM,data:sr1hcEQRJvYkQTH5V1rNQw==,iv:tafVmdB9uisTVHzbwxVVF3hlUbk2dpHEqBNdCzryAVo=,tag:XjejGM6+pSJmfy+bcotUrg==,type:str]
+    password: HmLdpo39fRRd441D
 service:
     type: NodePort
 metrics:
     enabled: true
-sops:
-    age:
-        - recipient: age10fq6202yhpg3nh0ce32dhz8w64g2xa8lkwux0uzuafnz3ywguuvqqyf68r
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBtT2tyMTludUZ0NzBYVWVt
-            cVNZck0rTU1raVRNREZHNlVLZnRvcmt5eDNNCllQT3dIUHpZREw4emQ0cEJkczUx
-            TlJwVVAzMDQ4T0swL0VrZVJlelZDUGcKLS0tIFdQblFUQkFFaDZuZFk1eFZ2VGxv
-            b011cEE1UENualVJQVdWSzR2OGs0VW8KhmMdyRDp9ka2g2YBypKgeir95rim6xmV
-            fwwbIU+seJUUATUUv3/pipWjLYraPMvXP712854mDL8QPzCDXFokhQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-24T12:33:30Z"
-    mac: ENC[AES256_GCM,data:09lhiHwoWult8JrDqKuLHKg9N0/Ncuhi51KeiQN4wghCzuRb0iGyPrZhcPagHkLoPrFqZJXfS5hh/hDIERdBld0WbU0CGnLu0KoNAefkFG1u0gYMvTPfmRBgsRvxOW4OPF45/ZJIVc3I2P9AQiUa4FTi//ELWAdDpT3V4xv/djY=,iv:+/nxt5mb1Pw7gCEmz3lNMSGXpUq9KG8j66pRZvTDupE=,tag:YiHNn00O4LDoxsZzhcXOrg==,type:str]
-    encrypted_regex: ^(password)$
-    version: 3.10.1
