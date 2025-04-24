@@ -10,6 +10,6 @@ resources:
 secretGenerator:
   - name: clickhouse-auth
     files:
-      - values.yaml=auth.enc.yaml
+      - values.yaml=my-values.enc.yaml
 configurations:
   - kustomizeconfig.yaml
