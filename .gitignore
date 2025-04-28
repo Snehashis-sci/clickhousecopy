@@ -2,3 +2,4 @@
 .decrypted~auth.yaml
 auth.yaml
 .decrypted~auth.enc.yaml
+.decrypted~secret.enc.yaml

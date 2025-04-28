@@ -1,10 +1,10 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: clickhouse
-  namespace: clickhouse
-spec:
-  interval: 1m
-  url: oci://registry-1.docker.io/bitnamicharts/clickhouse
-  ref:
-    tag: 8.0.6
+# apiVersion: source.toolkit.fluxcd.io/v1beta2
+# kind: OCIRepository
+# metadata:
+#   name: clickhouse
+#   namespace: clickhouse
+# spec:
+#   interval: 1m
+#   url: oci://registry-1.docker.io/bitnamicharts/clickhouse
+#   ref:
+#     tag: 8.0.6
