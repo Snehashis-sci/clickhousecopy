@@ -1,15 +1,15 @@
-# apiVersion: helm.toolkit.fluxcd.io/v2
-# kind: HelmRelease
-# metadata:
-#   name: clickhouse
-#   namespace: clickhouse
-# spec:
-#   interval: 2m
-#   chartRef:
-#     kind: OCIRepository
-#     name: clickhouse
-#     namespace: clickhouse
-#   valuesFrom:
-#     - kind: Secret
-#       name: clickhouse-auth
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: clickhouse
+  namespace: clickhouse
+spec:
+  interval: 2m
+  chartRef:
+    kind: OCIRepository
+    name: clickhouse
+    namespace: clickhouse
+  valuesFrom:
+    - kind: Secret
+      name: clickhouse-auth
     
