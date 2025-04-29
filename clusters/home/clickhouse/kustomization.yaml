@@ -7,9 +7,9 @@ resources:
   - helmrepo.yaml
   - release.yaml
   - namespace.yaml
-# secretGenerator:
-#   - name: clickhouse-auth
-#     files:
-#       - values.yaml=my-values.enc.yaml
-# configurations:
-#   - kustomizeconfig.yaml
+secretGenerator:
+  - name: clickhouse-auth
+    files:
+      - values.yaml=my-values.enc.yaml
+configurations:
+  - kustomizeconfig.yaml
