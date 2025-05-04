@@ -1,6 +1,6 @@
-creation_rules:
-  - path_regex: .*values.yaml$
-    encrypted_regex: "^(password)$"
-    key_groups:
-      - age:
-         - age10fq6202yhpg3nh0ce32dhz8w64g2xa8lkwux0uzuafnz3ywguuvqqyf68r
+# creation_rules:
+#   - path_regex: .*values.yaml$
+#     encrypted_regex: "^(password)$"
+#     key_groups:
+#       - age:
+#          - age10fq6202yhpg3nh0ce32dhz8w64g2xa8lkwux0uzuafnz3ywguuvqqyf68r

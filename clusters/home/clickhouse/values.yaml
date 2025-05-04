@@ -1,171 +1,186 @@
-# replicaCount: 2
-# clusterName: clickhouse-cluster1
-# logLevel: warning
-# extraOverrides: |
-#     <clickhouse>
-#       <!-- Macros -->
-#       <macros>
-#         <shard from_env="CLICKHOUSE_SHARD_ID"></shard>
-#         <replica from_env="CLICKHOUSE_REPLICA_ID"></replica>
-#         <layer>{{ include "common.names.fullname" . }}</layer>
-#       </macros>
-#       <!-- Log Level -->
-#       <logger>
-#         <level>{{ .Values.logLevel }}</level>
-#       </logger>
-#       {{- if or (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1)}}
-#       <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
-#       <remote_servers>
-#         <{{ .Values.clusterName }}>
-#           {{- $shards := $.Values.shards | int }}
-#           {{- range $shard, $e := until $shards }}
-#           <shard>
-#               <internal_replication>true</internal_replication>
-#               {{- $replicas := $.Values.replicaCount | int }}
-#               {{- range $i, $_e := until $replicas }}
-#               <replica>
-#                   <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
-#                   <port>{{ $.Values.service.ports.tcp }}</port>
-#                   <user from_env="CLICKHOUSE_ADMIN_USER"></user>
-#                   <password from_env="CLICKHOUSE_ADMIN_PASSWORD"></password>
-#               </replica>
-#               {{- end }}
-#           </shard>
-#           {{- end }}
-#         </{{ .Values.clusterName }}>
-#       </remote_servers>
-#       {{- end }}
-#       {{- if .Values.keeper.enabled }}
-#       <!-- keeper configuration -->
-#       <keeper_server>
-#         {{/*ClickHouse keeper configuration using the helm chart */}}
-#         <tcp_port>{{ $.Values.containerPorts.keeper }}</tcp_port>
-#         {{- if .Values.tls.enabled }}
-#         <tcp_port_secure>{{ $.Values.containerPorts.keeperSecure }}</tcp_port_secure>
-#         {{- end }}
-#         <server_id from_env="KEEPER_SERVER_ID"></server_id>
-#         <log_storage_path>/bitnami/clickhouse/keeper/coordination/log</log_storage_path>
-#         <snapshot_storage_path>/bitnami/clickhouse/keeper/coordination/snapshots</snapshot_storage_path>
+replicaCount: 2
+clusterName: clickhouse-cluster1
+logLevel: warning
+extraOverrides: |
+    <clickhouse>
+      <!-- Macros -->
+      <macros>
+        <shard from_env="CLICKHOUSE_SHARD_ID"></shard>
+        <replica from_env="CLICKHOUSE_REPLICA_ID"></replica>
+        <layer>{{ include "common.names.fullname" . }}</layer>
+      </macros>
+      <!-- Log Level -->
+      <logger>
+        <level>{{ .Values.logLevel }}</level>
+      </logger>
+      {{- if or (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1)}}
+      <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
+      <remote_servers>
+        <{{ .Values.clusterName }}>
+          {{- $shards := $.Values.shards | int }}
+          {{- range $shard, $e := until $shards }}
+          <shard>
+              <internal_replication>true</internal_replication>
+              {{- $replicas := $.Values.replicaCount | int }}
+              {{- range $i, $_e := until $replicas }}
+              <replica>
+                  <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
+                  <port>{{ $.Values.service.ports.tcp }}</port>
+                  <user from_env="CLICKHOUSE_ADMIN_USER"></user>
+                  <password from_env="CLICKHOUSE_ADMIN_PASSWORD"></password>
+              </replica>
+              {{- end }}
+          </shard>
+          {{- end }}
+        </{{ .Values.clusterName }}>
+      </remote_servers>
+      {{- end }}
+      {{- if .Values.keeper.enabled }}
+      <!-- keeper configuration -->
+      <keeper_server>
+        {{/*ClickHouse keeper configuration using the helm chart */}}
+        <tcp_port>{{ $.Values.containerPorts.keeper }}</tcp_port>
+        {{- if .Values.tls.enabled }}
+        <tcp_port_secure>{{ $.Values.containerPorts.keeperSecure }}</tcp_port_secure>
+        {{- end }}
+        <server_id from_env="KEEPER_SERVER_ID"></server_id>
+        <log_storage_path>/bitnami/clickhouse/keeper/coordination/log</log_storage_path>
+        <snapshot_storage_path>/bitnami/clickhouse/keeper/coordination/snapshots</snapshot_storage_path>
 
-#         <coordination_settings>
-#             <operation_timeout_ms>10000</operation_timeout_ms>
-#             <session_timeout_ms>30000</session_timeout_ms>
-#             <raft_logs_level>trace</raft_logs_level>
-#         </coordination_settings>
+        <coordination_settings>
+            <operation_timeout_ms>10000</operation_timeout_ms>
+            <session_timeout_ms>30000</session_timeout_ms>
+            <raft_logs_level>trace</raft_logs_level>
+        </coordination_settings>
 
-#         <raft_configuration>
-#         {{- $nodes := .Values.replicaCount | int }}
-#         {{- range $node, $e := until $nodes }}
-#         <server>
-#           <id>{{ $node | int }}</id>
-#           <hostname from_env="{{ printf "KEEPER_NODE_%d" $node }}"></hostname>
-#           <port>{{ $.Values.service.ports.keeperInter }}</port>
-#         </server>
-#         {{- end }}
-#         </raft_configuration>
-#       </keeper_server>
-#       {{- end }}
-#       {{- if or .Values.keeper.enabled .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
-#       <!-- Zookeeper configuration -->
-#       <zookeeper>
-#         {{- if or .Values.keeper.enabled }}
-#         {{- $nodes := .Values.replicaCount | int }}
-#         {{- range $node, $e := until $nodes }}
-#         <node>
-#           <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
-#           <port>{{ $.Values.service.ports.keeper }}</port>
-#         </node>
-#         {{- end }}
-#         {{- else if .Values.zookeeper.enabled }}
-#         {{/* Zookeeper configuration using the helm chart */}}
-#         {{- $nodes := .Values.zookeeper.replicaCount | int }}
-#         {{- range $node, $e := until $nodes }}
-#         <node>
-#           <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
-#           <port>{{ $.Values.zookeeper.service.ports.client }}</port>
-#         </node>
-#         {{- end }}
-#         {{- else if .Values.externalZookeeper.servers }}
-#         {{/* Zookeeper configuration using an external instance */}}
-#         {{- range $node :=.Values.externalZookeeper.servers }}
-#         <node>
-#           <host>{{ $node }}</host>
-#           <port>{{ $.Values.externalZookeeper.port }}</port>
-#         </node>
-#         {{- end }}
-#         {{- end }}
-#       </zookeeper>
-#       {{- end }}
-#       {{- if .Values.tls.enabled }}
-#       <!-- TLS configuration -->
-#       <tcp_port_secure from_env="CLICKHOUSE_TCP_SECURE_PORT"></tcp_port_secure>
-#       <https_port from_env="CLICKHOUSE_HTTPS_PORT"></https_port>
-#       <openSSL>
-#           <server>
-#               {{- $certFileName := default "tls.crt" .Values.tls.certFilename }}
-#               {{- $keyFileName := default "tls.key" .Values.tls.certKeyFilename }}
-#               <certificateFile>/bitnami/clickhouse/certs/{{$certFileName}}</certificateFile>
-#               <privateKeyFile>/bitnami/clickhouse/certs/{{$keyFileName}}</privateKeyFile>
-#               <verificationMode>none</verificationMode>
-#               <cacheSessions>true</cacheSessions>
-#               <disableProtocols>sslv2,sslv3</disableProtocols>
-#               <preferServerCiphers>true</preferServerCiphers>
-#               {{- if or .Values.tls.autoGenerated .Values.tls.certCAFilename }}
-#               {{- $caFileName := default "ca.crt" .Values.tls.certCAFilename }}
-#               <caConfig>/bitnami/clickhouse/certs/{{$caFileName}}</caConfig>
-#               {{- else }}
-#               <loadDefaultCAFile>true</loadDefaultCAFile>
-#               {{- end }}
-#           </server>
-#           <client>
-#               <loadDefaultCAFile>true</loadDefaultCAFile>
-#               <cacheSessions>true</cacheSessions>
-#               <disableProtocols>sslv2,sslv3</disableProtocols>
-#               <preferServerCiphers>true</preferServerCiphers>
-#               <verificationMode>none</verificationMode>
-#               <invalidCertificateHandler>
-#                   <name>AcceptCertificateHandler</name>
-#               </invalidCertificateHandler>
-#           </client>
-#       </openSSL>
-#       {{- end }}
-#       {{- if .Values.metrics.enabled }}
-#       <!-- Prometheus metrics -->
-#       <prometheus>
-#           <endpoint>/metrics</endpoint>
-#           <port from_env="CLICKHOUSE_METRICS_PORT"></port>
-#           <metrics>true</metrics>
-#           <events>true</events>
-#           <asynchronous_metrics>true</asynchronous_metrics>
-#       </prometheus>
-#       {{- end }}
-#       <listen_host>0.0.0.0</listen_host>
-#       <listen_host>::</listen_host>
-#       <listen_try>1</listen_try>
-#     </clickhouse>
-# persistence:
-#     size: 1Gi
-# # remove this in production
-# resourcesPreset: small
-# ## @param resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
-# ## Example:
-# resources:
-#     requests:
-#         cpu: 500m
-#         memory: 512Mi
-#     limits:
-#         cpu: 2000m
-#         memory: 2048Mi
-# zookeeper:
-#     enabled: false
-# keeper:
-#     enabled: true
-# distributeReplicasByZone: true
-# shards: 1
-# auth:
-#     username: default
-#     password: HmLdpo39fRRd441D
-# service:
-#     type: NodePort
-# metrics:
-#     enabled: true
+        <raft_configuration>
+        {{- $nodes := .Values.replicaCount | int }}
+        {{- range $node, $e := until $nodes }}
+        <server>
+          <id>{{ $node | int }}</id>
+          <hostname from_env="{{ printf "KEEPER_NODE_%d" $node }}"></hostname>
+          <port>{{ $.Values.service.ports.keeperInter }}</port>
+        </server>
+        {{- end }}
+        </raft_configuration>
+      </keeper_server>
+      {{- end }}
+      {{- if or .Values.keeper.enabled .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
+      <!-- Zookeeper configuration -->
+      <zookeeper>
+        {{- if or .Values.keeper.enabled }}
+        {{- $nodes := .Values.replicaCount | int }}
+        {{- range $node, $e := until $nodes }}
+        <node>
+          <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
+          <port>{{ $.Values.service.ports.keeper }}</port>
+        </node>
+        {{- end }}
+        {{- else if .Values.zookeeper.enabled }}
+        {{/* Zookeeper configuration using the helm chart */}}
+        {{- $nodes := .Values.zookeeper.replicaCount | int }}
+        {{- range $node, $e := until $nodes }}
+        <node>
+          <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
+          <port>{{ $.Values.zookeeper.service.ports.client }}</port>
+        </node>
+        {{- end }}
+        {{- else if .Values.externalZookeeper.servers }}
+        {{/* Zookeeper configuration using an external instance */}}
+        {{- range $node :=.Values.externalZookeeper.servers }}
+        <node>
+          <host>{{ $node }}</host>
+          <port>{{ $.Values.externalZookeeper.port }}</port>
+        </node>
+        {{- end }}
+        {{- end }}
+      </zookeeper>
+      {{- end }}
+      {{- if .Values.tls.enabled }}
+      <!-- TLS configuration -->
+      <tcp_port_secure from_env="CLICKHOUSE_TCP_SECURE_PORT"></tcp_port_secure>
+      <https_port from_env="CLICKHOUSE_HTTPS_PORT"></https_port>
+      <openSSL>
+          <server>
+              {{- $certFileName := default "tls.crt" .Values.tls.certFilename }}
+              {{- $keyFileName := default "tls.key" .Values.tls.certKeyFilename }}
+              <certificateFile>/bitnami/clickhouse/certs/{{$certFileName}}</certificateFile>
+              <privateKeyFile>/bitnami/clickhouse/certs/{{$keyFileName}}</privateKeyFile>
+              <verificationMode>none</verificationMode>
+              <cacheSessions>true</cacheSessions>
+              <disableProtocols>sslv2,sslv3</disableProtocols>
+              <preferServerCiphers>true</preferServerCiphers>
+              {{- if or .Values.tls.autoGenerated .Values.tls.certCAFilename }}
+              {{- $caFileName := default "ca.crt" .Values.tls.certCAFilename }}
+              <caConfig>/bitnami/clickhouse/certs/{{$caFileName}}</caConfig>
+              {{- else }}
+              <loadDefaultCAFile>true</loadDefaultCAFile>
+              {{- end }}
+          </server>
+          <client>
+              <loadDefaultCAFile>true</loadDefaultCAFile>
+              <cacheSessions>true</cacheSessions>
+              <disableProtocols>sslv2,sslv3</disableProtocols>
+              <preferServerCiphers>true</preferServerCiphers>
+              <verificationMode>none</verificationMode>
+              <invalidCertificateHandler>
+                  <name>AcceptCertificateHandler</name>
+              </invalidCertificateHandler>
+          </client>
+      </openSSL>
+      {{- end }}
+      {{- if .Values.metrics.enabled }}
+      <!-- Prometheus metrics -->
+      <prometheus>
+          <endpoint>/metrics</endpoint>
+          <port from_env="CLICKHOUSE_METRICS_PORT"></port>
+          <metrics>true</metrics>
+          <events>true</events>
+          <asynchronous_metrics>true</asynchronous_metrics>
+      </prometheus>
+      {{- end }}
+      <listen_host>0.0.0.0</listen_host>
+      <listen_host>::</listen_host>
+      <listen_try>1</listen_try>
+    </clickhouse>
+persistence:
+    size: 1Gi
+# remove this in production
+resourcesPreset: small
+## @param resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+## Example:
+resources:
+    requests:
+        cpu: 500m
+        memory: 512Mi
+    limits:
+        cpu: 2000m
+        memory: 2048Mi
+zookeeper:
+    enabled: false
+keeper:
+    enabled: true
+distributeReplicasByZone: true
+shards: 1
+auth:
+    username: ENC[AES256_GCM,data:m4juCZJ7/w==,iv:612I88q94Eqr6kLoyYDlz/tVYfNWk1L+832DZ7Ylkkk=,tag:hYdyhQnHVvAnMoy7u+qPwA==,type:str]
+    password: ENC[AES256_GCM,data:6OHNgkvZ0vyKmbuAUqzoBQ==,iv:WfLG3IAGKS+QDL1eHJaJM6TUj5YQJLRIy41PAF+B04M=,tag:YErLuHizKJztV7xTd52rbA==,type:str]
+service:
+    type: NodePort
+metrics:
+    enabled: true
+sops:
+    age:
+        - recipient: age10fq6202yhpg3nh0ce32dhz8w64g2xa8lkwux0uzuafnz3ywguuvqqyf68r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBENUNBUUtHaE5UcWNqamNH
+            MURaTWxybEM1QUh5cEhFV0xHMHd3QTVlUUVBCjhhdXpuZTlFVDk5RzBhSHR0dDc2
+            b2RwdTlQNVo3YTR4SThQZFR4b2psSTAKLS0tIGlid2J6N0NTajRvSW9pMDZqMUl4
+            Y1p6R0FycmRDMUE4M015MGN5Y1ZDSlkKIFDEhFh96b9eJcLi1Q4XyY50E4WKmP3W
+            7hozx4lA4HSa2eZ+fSK4LsI+sTNEkWd9neJKDOLcRcT2SgLlBKyNJg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-05-04T07:28:02Z"
+    mac: ENC[AES256_GCM,data:oivK1qyMZ3NEx8L/UcWKcxnUgzc5CEoqAxSFgDVNepagZrfkxH2VpT+/Mnl11jxHWYMO6HZueU9Mtv69iPe8OgEMCqq8qhHCsNOREVsI/9PcJHkdLFIU9bxz/BTpslPRAJDYVZ/PlZagwGLhiBFE2JY4fz3Gj3uX8W0E8VU/lDM=,iv:ZLVu0VT5zVlKd83JZ7iONd7i1afOAVSTfbw2lcrGhJo=,tag:X8Ys6yVXmmUS0xhjYBQCgg==,type:str]
+    encrypted_regex: ^(auth)$
+    version: 3.10.1
